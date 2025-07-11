@@ -1,16 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import NavigationBar from "@/components/NavigationBar";
+import { inter, lora, playfairDisplay, roboto } from "@/lib/fonts";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -19,15 +11,19 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+        className={`${inter.className} ${lora.className} ${roboto.className} ${playfairDisplay.className} antialiased flex flex-col min-h-screen`}>
+        <NavigationBar />
+        <main className="flex-grow">
+          <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-3">
+            {children}
+          </div>
+        </main>
+
+        <Footer />
       </body>
     </html>
   );
