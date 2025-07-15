@@ -1,20 +1,12 @@
-const BASE_URL = 'https://api.convertkr.com';
-
-export const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
-  const res = await fetch(`${BASE_URL}${endpoint}`, {...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(options.headers || {}),
-    },
+export const apiBase = async (
+  path: string,
+  options: RequestInit = {}
+): Promise<any> => {
+  const res = await fetch(`${"https://api.convertkr.com"}${path}`, {
+    headers: { 'Content-Type': 'application/json' },
+    ...options,
   });
 
-  if (!res.ok) {
-    throw new Error(`API error: ${res.status}`);
-  }
-
-  return res.json();
+  if (!res.ok) throw new Error(`API Error: ${res.status}`);
+  return await res.json();
 };
-
-
-
-

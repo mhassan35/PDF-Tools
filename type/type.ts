@@ -7,7 +7,11 @@ import {
 } from "react-icons/io5"
 import { SiConvertio } from "react-icons/si"
 import type { IconType } from "react-icons"
-
+    
+interface Options {
+  id: string;
+  name: string;
+}
 
 export type CardItem = {
   icon: IconType
@@ -68,3 +72,14 @@ export const whyChooseSectionData: SecondCardItem[] = [
     description: "All tools are free and available to use without creating an account.",
   },
 ]
+
+
+
+
+ export const option: Options[] = [
+    {name: "PDF", id: "1"},
+    {name: "PNG", id: "2"},
+    {name: "JPG", id: "3"},
+    {name: "jPEG", id: "4"},
+    {name: "WEBP", id: "5"}
+  ]
