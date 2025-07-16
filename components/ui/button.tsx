@@ -1,104 +1,85 @@
-'use client';
+'use client'
+import  React from "react"
+import { Slot } from "@radix-ui/react-slot"
+import { cva, type VariantProps } from "class-variance-authority"
+import { cn } from "@/lib/utils"
 
-import React, { useRef } from 'react';
-import clsx from 'clsx';
-import { inter, roboto } from '@/lib/fonts';
+const buttonVariants = cva(
+  "cursor-pointer inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
+        destructive: "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+        outline: "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
+        secondary: "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
+        link: "text-primary underline-offset-4 hover:underline",
+      },
+      size: {
+        default: "h-9 px-4 py-2 has-[>svg]:px-3",
+        sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
+        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
+        icon: "size-9",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+)
 
-export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
-export type ButtonSize = 'sm' | 'md' | 'lg';
-
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-  children: React.ReactNode;
-  className?: string;
-  isLoading?: boolean;
-}
-
-const baseStyles = `${inter.className} relative overflow-hidden inline-flex items-center justify-center rounded-md font-medium transition-all disabled:opacity-50 disabled:pointer-events-none cursor-pointer`;
-
-const variantStyles: Record<ButtonVariant, string> = {
-  primary: 'bg-blue-600 text-white hover:bg-blue-700',
-  secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200',
-  outline: 'border border-gray-300 text-gray-800 hover:bg-gray-100',
-  ghost: 'text-gray-700 hover:bg-gray-100 focus:ring-2',
-  danger: 'bg-red-600 text-white hover:bg-red-700',
-};
-
-const sizeStyles: Record<ButtonSize, string> = {
-  sm: 'px-3 py-1.5 text-sm',
-  md: 'px-4 py-2 text-base',
-  lg: 'px-6 py-3 text-lg',
-};
-
-export const Button: React.FC<ButtonProps> = ({
-  variant = 'primary',
-  size = 'md',
-  children,
+function Button({
   className,
-  isLoading,
+  variant,
+  size,
+  asChild = false,
+  onClick,
   ...props
-}) => {
-  const buttonRef = useRef<HTMLButtonElement>(null);
+}: React.ComponentProps<"button"> &
+  VariantProps<typeof buttonVariants> & {
+    asChild?: boolean
+  }) {
+  const Comp = asChild ? Slot : "button"
+  const buttonRef = React.useRef<HTMLButtonElement | null>(null)
 
-  const createRipple = (event: React.MouseEvent<HTMLButtonElement>) => {
-    const button = buttonRef.current;
-    if (!button) return;
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const button = buttonRef.current
+    if (button) {
+      const ripple = document.createElement("span")
+      ripple.className = "ripple"
 
-    const circle = document.createElement('span');
-    const diameter = Math.max(button.clientWidth, button.clientHeight);
-    const radius = diameter / 2;
+      const rect = button.getBoundingClientRect()
+      const size = Math.max(rect.width, rect.height)
+      const x = e.clientX - rect.left - size / 2
+      const y = e.clientY - rect.top - size / 2
 
-    circle.style.width = circle.style.height = `${diameter}px`;
-    circle.style.left = `${event.clientX - button.getBoundingClientRect().left - radius}px`;
-    circle.style.top = `${event.clientY - button.getBoundingClientRect().top - radius}px`;
-    circle.classList.add('ripple');
+      ripple.style.width = ripple.style.height = `${size}px`
+      ripple.style.left = `${x}px`
+      ripple.style.top = `${y}px`
 
-    const existingRipple = button.getElementsByClassName('ripple')[0];
-    if (existingRipple) existingRipple.remove();
+      button.appendChild(ripple)
 
-    button.appendChild(circle);
-  };
+      // Remove ripple after animation
+      ripple.addEventListener("animationend", () => {
+        ripple.remove()
+      })
+    }
+
+    // Call original onClick
+    onClick?.(e)
+  }
 
   return (
-    <button
+    <Comp
       ref={buttonRef}
-      onClick={(e) => {
-        createRipple(e);
-        props.onClick?.(e);
-      }}
-      className={clsx(
-        baseStyles,
-        variantStyles[variant],
-        sizeStyles[size],
-        className
-      )}
-      disabled={isLoading || props.disabled}
+      data-slot="button"
+      className={cn("button-wrapper", buttonVariants({ variant, size, className }))}
+      onClick={handleClick}
       {...props}
-    >
-      {isLoading && (
-        <svg
-          className="animate-spin h-5 w-5 mr-2 text-white"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            strokeWidth="4"
-          ></circle>
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8v8H4z"
-          ></path>
-        </svg>
-      )}
-      {children}
-    </button>
-  );
-};
+    />
+  )
+}
+
+export { Button, buttonVariants }
