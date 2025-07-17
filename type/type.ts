@@ -73,9 +73,6 @@ export const whyChooseSectionData: SecondCardItem[] = [
   },
 ]
 
-
-
-
  export const option: Options[] = [
     {name: "PDF", id: "1"},
     {name: "PNG", id: "2"},
@@ -83,3 +80,29 @@ export const whyChooseSectionData: SecondCardItem[] = [
     {name: "jPEG", id: "4"},
     {name: "WEBP", id: "5"}
   ]
+
+ export interface Conversion {
+  file_type: String
+  file_url: String 
+  id: number 
+  output_file_url: String 
+  target_type: string
+
+ }
+ export interface ConversionPayload {
+  input_file: string;
+  output_format: string;
+}
+
+export interface MergedFile {
+  id?: number; 
+  files: string[];
+  merged_file: string;
+}
+
+export interface SplitFile {
+  id: number;
+  file_name: string | null;
+  page_ranges: [number, number][];
+  split_files: string[] | null;
+}

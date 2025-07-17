@@ -9,7 +9,7 @@ import { FiPlus, FiEye } from 'react-icons/fi';
 import { IoCutOutline } from "react-icons/io5";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { inter, lora } from '@/lib/fonts';
-import { apiBase } from '@/lib/api'; // Assuming this is your API wrapper
+import { splitService } from '@/helper/splitHelper';
 
 const SplitPage = () => {
   const [fileUrl, setFileUrl] = useState('');
@@ -37,13 +37,11 @@ const SplitPage = () => {
         outputs: parts,
       };
 
-      const res = await apiBase('/split', {
-        method: 'POST',
-        body: JSON.stringify(body),
-      });
-
+      const res = await splitService.split(body); 
+      console.log("Split Response:", res);
       setResult(res);
     } catch (err) {
+      console.error(err);
       alert('Split failed');
     } finally {
       setLoading(false);
