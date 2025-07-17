@@ -4,14 +4,12 @@ import { FiDownload, FiEye, FiArrowLeft } from "react-icons/fi"
 import { Button } from "@/components/ui/button"
 import { conversionService } from "@/helper/conversionsHelper"
 
-import { useRouter, useSearchParams } from "next/navigation" 
+import { useRouter } from "next/navigation" 
 import { roboto } from "@/lib/fonts"
 import { Conversion } from "@/type/type"
 
 const ConvertedFilesPage = () => {
   const router = useRouter()
-  const searchParams = useSearchParams() 
-  const refresh = searchParams.get("refresh")
   const [files, setFiles] = useState<Conversion[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -34,7 +32,7 @@ useEffect(() => {
   };
 
   fetchConvertedFiles();
-}, [refresh]);
+}, []);
 
 // Merges API and local converted files, avoiding duplicates.
 const mergeConvertedFiles = (local: Conversion[], remote: Conversion[]): Conversion[] => {
