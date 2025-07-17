@@ -1,10 +1,9 @@
-import {
-  IoShieldCheckmarkOutline,
-  IoLockOpenOutline,
-  IoTimerOutline,
-  IoGitMergeOutline,
-  IoCutOutline,
-} from "react-icons/io5"
+import { 
+  IoShieldCheckmarkOutline, 
+  IoLockOpenOutline, 
+  IoTimerOutline, 
+  IoGitMergeOutline, 
+  IoCutOutline} from "react-icons/io5"
 import { SiConvertio } from "react-icons/si"
 import type { IconType } from "react-icons"
     
@@ -12,7 +11,14 @@ interface Options {
   id: string;
   name: string;
 }
-
+export const conversionOptions: Options[] = [
+  {name: "PDF", id: "1"},
+  {name: "PNG", id: "2"},
+  {name: "JPG", id: "3"},
+  {name: "jPEG", id: "4"},
+  {name: "WEBP", id: "5"}
+  ]
+// Types of card data
 export type CardItem = {
   icon: IconType
   title: string
@@ -26,7 +32,37 @@ export type SecondCardItem = {
   title: string
   description: string
 }
-// Main cards
+
+// Types of api data
+export interface Conversion {
+  file_url: string;
+  output_file_url: string;
+  file_type: string;
+  target_type: string;
+}
+
+export interface ConversionPayload {
+  input_file: string;
+  output_format: string;
+  custom_output_url?: string;
+}
+
+export interface MergedFile {
+  files: string[]
+  merged_file: string
+  created_at?: string
+}
+
+export interface SplitFile {
+  file_name: string | null
+  page_ranges: [number, number][]
+  split_files: string[] | null
+  created_at?: string
+}
+
+
+
+// Main section cards
 export const cardsData: CardItem[] = [
   {
     icon: IoGitMergeOutline,
@@ -53,7 +89,7 @@ export const cardsData: CardItem[] = [
 ]
 
 
-// Why Choose Us Cards
+// Cards For Section Why choose us 
 
 export const whyChooseSectionData: SecondCardItem[] = [
   {
@@ -72,37 +108,3 @@ export const whyChooseSectionData: SecondCardItem[] = [
     description: "All tools are free and available to use without creating an account.",
   },
 ]
-
- export const option: Options[] = [
-    {name: "PDF", id: "1"},
-    {name: "PNG", id: "2"},
-    {name: "JPG", id: "3"},
-    {name: "jPEG", id: "4"},
-    {name: "WEBP", id: "5"}
-  ]
-
- export interface Conversion {
-  file_type: String
-  file_url: String 
-  id: number 
-  output_file_url: String 
-  target_type: string
-
- }
- export interface ConversionPayload {
-  input_file: string;
-  output_format: string;
-}
-
-export interface MergedFile {
-  id?: number; 
-  files: string[];
-  merged_file: string;
-}
-
-export interface SplitFile {
-  id: number;
-  file_name: string | null;
-  page_ranges: [number, number][];
-  split_files: string[] | null;
-}
